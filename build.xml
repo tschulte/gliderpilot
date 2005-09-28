@@ -61,7 +61,12 @@
 			<include name="javolution/**/*.jar" />
 		</fileset>
 	</path>
-    
+	<path id="lib.logging">
+		<fileset dir="${lib.dir}">
+			<include name="commons-logging/*.jar"/>
+		</fileset>
+   	</path>
+
     <!-- For the Coverage reports -->
 	<path id="lib.emma">
 		<fileset dir="${lib.dir}">
@@ -96,8 +101,11 @@
 		       destdir="${build.classes.app}"
 		       failonerror="yes"
 		       source="1.5"
-		       classpathref="lib.jscience"
 		       debug="true">
+		       <classpath>
+		       		<path refid="lib.jscience" />
+				<path refid="lib.logging" />
+		       </classpath>
 		</javac>
 		<javac srcdir="${src.dir.JUnit}"
 		       destdir="${build.classes.junit}"
@@ -107,6 +115,7 @@
 			<classpath>
 				<path refid="lib.junit" />
 				<path refid="lib.jscience" />
+				<path refid="lib.logging" />
 				<dirset dir="${build.classes.app}" />
 			</classpath>
 		</javac>
@@ -152,6 +161,7 @@
 			<classpath refid="lib.emma" />
 			<classpath refid="lib.junit" />
 			<classpath refid="lib.jscience" />
+			<classpath refid="lib.logging" />
 
 			<jvmarg value="-Demma.coverage.out.file=${build.reports.coverage}/coverage.emma" />
 			<jvmarg value="-Demma.coverage.out.merge=false" />

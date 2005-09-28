@@ -5,156 +5,135 @@
  */
 package de.gliderpilot.geo;
 
-import junit.framework.TestCase;
-import de.gliderpilot.unit.DistanceUnit;
-import de.gliderpilot.unit.DistanceVector;
+import static org.jscience.physics.units.NonSI.DEGREE_ANGLE;
+
+import org.jscience.physics.quantities.Angle;
+import org.jscience.physics.quantities.Length;
+import org.jscience.physics.quantities.Quantity;
+import org.jscience.physics.units.NonSI;
 
 /**
  * @author tobias
  */
-public class GeoCoordinateTest extends TestCase {
+public class GeoCoordinateTest extends AbstractJadeTest {
 
-	private GeoCoordinate geoCoord, geoCoordPole;
+    public void testIsValid() {
+        assertTrue(new GeoCoordinate(-90, -180).isValid());
+        assertTrue(new GeoCoordinate(-90, 0).isValid());
+        assertTrue(new GeoCoordinate(-90, 180).isValid());
 
-	/**
-	 * Constructor for GeoCoordinateTest.
-	 * @param arg0
-	 */
-	public GeoCoordinateTest(String arg0) {
-		super(arg0);
-	}
+        assertTrue(new GeoCoordinate(0, -180).isValid());
+        assertTrue(new GeoCoordinate(0, 0).isValid());
+        assertTrue(new GeoCoordinate(0, 180).isValid());
 
-	/*
-	 * @see TestCase#setUp()
-	 */
-	protected void setUp() throws Exception {
-		geoCoord = new GeoCoordinate(0,0);
-		geoCoordPole = new GeoCoordinate(90,0);
-	}
-	
-	public void testIsValid() {
-		assertTrue(geoCoord.isValid());
-	}
-	
-	public void testDistance0() {
-		DistanceVector vector = geoCoord.getDistanceTo(geoCoord);
-		vector.get(DistanceUnit.METER);
-		assertEquals(0, vector.getDistance(), 0.0001);
-		assertEquals(0, vector.getCourse(), 0.001);
-		
-		vector = geoCoordPole.getDistanceTo(geoCoordPole);
-		vector.get(DistanceUnit.METER);
-		assertEquals(0, vector.getDistance(), 0.0001);
-		assertEquals(0, vector.getCourse(), 0.001);
-	}
+        assertTrue(new GeoCoordinate(90, -180).isValid());
+        assertTrue(new GeoCoordinate(90, 0).isValid());
+        assertTrue(new GeoCoordinate(90, 180).isValid());
 
-	public void testDistance1DegreeEast() {
-		GeoCoordinate to = new GeoCoordinate(0, 1);
-		DistanceVector vector = geoCoord.getDistanceTo(to);
-		vector.get(DistanceUnit.NAUTICAL_MILE);
-		assertEquals(60, vector.getDistance(), 0.0001);
-		assertEquals(90, vector.getCourse(), 0.001);
+        assertFalse(new GeoCoordinate(-91, 0).isValid());
+        assertFalse(new GeoCoordinate(91, 0).isValid());
+        assertFalse(new GeoCoordinate(0, -181).isValid());
+        assertFalse(new GeoCoordinate(0, 181).isValid());
+    }
 
+    public void testDistanceInvalidPos() {
+        assertNull(new GeoCoordinate(0, 0).getDistanceTo(new GeoCoordinate(91,
+                0)));
+        assertNull(new GeoCoordinate(91, 0).getDistanceTo(new GeoCoordinate(0,
+                0)));
+    }
 
-		to = new GeoCoordinate(90, 1);
-		vector = geoCoordPole.getDistanceTo(to);
-		vector.get(DistanceUnit.NAUTICAL_MILE);
-		assertEquals(0, vector.getDistance(), 0.0001);
-		assertEquals(0, vector.getCourse(), 0.001);
-	}
+    public void testDistance() {
+        Length l = new GeoCoordinate(0, 0)
+                .getDistanceTo(new GeoCoordinate(1, 0));
+        assertNotNull(l);
+        assertEquals(Quantity.valueOf(60, NonSI.NAUTICAL_MILE), l);
+    }
 
-	public void testDistance1DegreeWest() {
-		GeoCoordinate to = new GeoCoordinate(0, -1);
-		DistanceVector vector = geoCoord.getDistanceTo(to);
-		vector.get(DistanceUnit.NAUTICAL_MILE);
-		assertEquals(60, vector.getDistance(), 0.0001);
-		assertEquals(270, vector.getCourse(), 0.001);
+    public void testDistancePoleToPole() {
+        Length l = new GeoCoordinate(-90, 0).getDistanceTo(new GeoCoordinate(
+                90, 0));
+        assertNotNull(l);
+        assertEquals(Quantity.valueOf(10800, NonSI.NAUTICAL_MILE), l);
+    }
 
-		to = new GeoCoordinate(90, -1);
-		vector = geoCoordPole.getDistanceTo(to);
-		vector.get(DistanceUnit.NAUTICAL_MILE);
-		assertEquals(0, vector.getDistance(), 0.0001);
-		assertEquals(0, vector.getCourse(), 0.001);
-	}
+    public void testDistancePoleToPoleLonSwitch() {
+        Length l = new GeoCoordinate(-90, 0).getDistanceTo(new GeoCoordinate(
+                90, 180));
+        assertNotNull(l);
+        assertEquals(Quantity.valueOf(10800, NonSI.NAUTICAL_MILE), l);
+    }
 
-	public void testDistance1DegreeNorth() {
-		GeoCoordinate to = new GeoCoordinate(1, 0);
-		DistanceVector vector = geoCoord.getDistanceTo(to);
-		vector.get(DistanceUnit.NAUTICAL_MILE);
-		assertEquals(60, vector.getDistance(), 0.0001);
-		assertEquals(0, vector.getCourse(), 0.1);
-	}
-	public void testDistance1DegreeSouth() {
-		GeoCoordinate to = new GeoCoordinate(-1, 0);
-		DistanceVector vector = geoCoord.getDistanceTo(to);
-		vector.get(DistanceUnit.NAUTICAL_MILE);
-		assertEquals(60, vector.getDistance(), 0.0001);
-		assertEquals(180, vector.getCourse(), 0.001);
+    public void testDistanceEquator() {
+        Length l = new GeoCoordinate(0, 0).getDistanceTo(new GeoCoordinate(0,
+                180));
+        assertNotNull(l);
+        assertEquals(Quantity.valueOf(10800, NonSI.NAUTICAL_MILE), l);
+    }
 
-		to = new GeoCoordinate(89, 0);
-		vector = geoCoordPole.getDistanceTo(to);
-		vector.get(DistanceUnit.NAUTICAL_MILE);
-		assertEquals(60, vector.getDistance(), 0.0001);
-		assertEquals(180, vector.getCourse(), 0.001);
-	}
+    public void testShortestDistance() {
+        Length l1 = new GeoCoordinate(0, 0).getDistanceTo(new GeoCoordinate(0,
+                179));
+        Length l2 = new GeoCoordinate(0, 0).getDistanceTo(new GeoCoordinate(0,
+                -179));
+        assertEquals(l1, l2);
+    }
 
-	public void testDistance1DegreeNorthEast() {
-		GeoCoordinate to = new GeoCoordinate(1, 1);
-		DistanceVector vector = geoCoord.getDistanceTo(to);
-		vector.get(DistanceUnit.NAUTICAL_MILE);
-		assertEquals(84.85, vector.getDistance(), 0.1);
-		assertEquals(45, vector.getCourse(), 0.01);
-	}
-	public void testDistance1DegreeSouthEast() {
-		GeoCoordinate to = new GeoCoordinate(-1, 1);
-		DistanceVector vector = geoCoord.getDistanceTo(to);
-		vector.get(DistanceUnit.NAUTICAL_MILE);
-		assertEquals(84.85, vector.getDistance(), 0.1);
-		assertEquals(135, vector.getCourse(), 0.01);
+    public void testTrueCourseTo() {
+        Angle a = new GeoCoordinate(0, 0).trueCourseTo(null);
+        assertNull(a);
+        a = new GeoCoordinate(0, 0).trueCourseTo(new GeoCoordinate(91, 0));
+        assertNull(a);
+        a = new GeoCoordinate(91, 0).trueCourseTo(new GeoCoordinate(0, 0));
+        assertNull(a);
+        a = new GeoCoordinate(0, 0).trueCourseTo(new GeoCoordinate(1, 0));
+        assertEquals(Quantity.valueOf(0, NonSI.DEGREE_ANGLE), a);
+        a = new GeoCoordinate(0, 0).trueCourseTo(new GeoCoordinate(1, 1));
+        assertEquals(Quantity.valueOf(45, NonSI.DEGREE_ANGLE), a);
+        a = new GeoCoordinate(0, 0).trueCourseTo(new GeoCoordinate(0, 1));
+        assertEquals(Quantity.valueOf(90, NonSI.DEGREE_ANGLE), a);
+        a = new GeoCoordinate(0, 0).trueCourseTo(new GeoCoordinate(-1, 1));
+        assertEquals(Quantity.valueOf(135, NonSI.DEGREE_ANGLE), a);
+        a = new GeoCoordinate(0, 0).trueCourseTo(new GeoCoordinate(-1, 0));
+        assertEquals(Quantity.valueOf(180, NonSI.DEGREE_ANGLE), a);
+        a = new GeoCoordinate(0, 0).trueCourseTo(new GeoCoordinate(-1, -1));
+        assertEquals(Quantity.valueOf(225, NonSI.DEGREE_ANGLE), a);
+        a = new GeoCoordinate(0, 0).trueCourseTo(new GeoCoordinate(0, -1));
+        assertEquals(Quantity.valueOf(270, NonSI.DEGREE_ANGLE), a);
+        a = new GeoCoordinate(0, 0).trueCourseTo(new GeoCoordinate(1, -1));
+        assertEquals(Quantity.valueOf(315, NonSI.DEGREE_ANGLE), a);
+    }
 
-		to = new GeoCoordinate(89, 1);
-		vector = geoCoordPole.getDistanceTo(to);
-		vector.get(DistanceUnit.NAUTICAL_MILE);
-		assertEquals(60, vector.getDistance(), 0.01);
-		assertEquals(179.5, vector.getCourse() ,0.001);
-	}
-
-	public void testDistance1DegreeSouthWest() {
-		GeoCoordinate to = new GeoCoordinate(-1, -1);
-		DistanceVector vector = geoCoord.getDistanceTo(to);
-		vector.get(DistanceUnit.NAUTICAL_MILE);
-		assertEquals(84.85, vector.getDistance(), 0.1);
-		assertEquals(225, vector.getCourse(), 0.01);
-	}
-
-	public void testDistance1DegreeNorthWest() {
-		GeoCoordinate to = new GeoCoordinate(1, -1);
-		DistanceVector vector = geoCoord.getDistanceTo(to);
-		vector.get(DistanceUnit.NAUTICAL_MILE);
-		assertEquals(84.85, vector.getDistance(), 0.1);
-		assertEquals(315, vector.getCourse(), 0.01);
-	}
-	
-	public void testGetCoordIn60MilesEast() {
-		GeoCoordinate coord = geoCoord.getCoordIn(new DistanceVector(60, DistanceUnit.NAUTICAL_MILE, 90));
-		assertEquals(1, coord.getLon(), 0.001);
-		assertEquals(0, coord.getLat(), 0.001);
-
-	}
-	public void testGetCoordIn60MilesWest() {
-		GeoCoordinate coord = geoCoord.getCoordIn(new DistanceVector(60, DistanceUnit.NAUTICAL_MILE, 270));
-		assertEquals(-1, coord.getLon(), 0.001);
-		assertEquals(0, coord.getLat(), 0.001);
-	}
-	public void testGetCoordIn60MilesNorth() {
-		GeoCoordinate coord = geoCoord.getCoordIn(new DistanceVector(60, DistanceUnit.NAUTICAL_MILE, 0));
-		assertEquals(0, coord.getLon(), 0.001);
-		assertEquals(1, coord.getLat(), 0.001);
-	}
-	public void testGetCoordIn60MilesSouth() {
-		GeoCoordinate coord = geoCoord.getCoordIn(new DistanceVector(60, DistanceUnit.NAUTICAL_MILE, 180));
-		assertEquals(0, coord.getLon(), 0.001);
-		assertEquals(-1, coord.getLat(), 0.001);
-	}
+    public void testAverageCourseTo() {
+        Angle a = new GeoCoordinate(0, 0).getAverageCourseTo(null);
+        assertNull(a);
+        a = new GeoCoordinate(0, 0)
+                .getAverageCourseTo(new GeoCoordinate(91, 0));
+        assertNull(a);
+        a = new GeoCoordinate(91, 0)
+                .getAverageCourseTo(new GeoCoordinate(0, 0));
+        assertNull(a);
+        a = new GeoCoordinate(0, 0).getAverageCourseTo(new GeoCoordinate(1, 0));
+        assertEquals((Angle) Quantity.valueOf(0, DEGREE_ANGLE), a);
+        a = new GeoCoordinate(0, 0).getAverageCourseTo(new GeoCoordinate(1, 1));
+        assertEquals((Angle) Quantity.valueOf(45, DEGREE_ANGLE), a);
+        a = new GeoCoordinate(0, 0).getAverageCourseTo(new GeoCoordinate(0, 1));
+        assertEquals((Angle) Quantity.valueOf(90, DEGREE_ANGLE), a);
+        a = new GeoCoordinate(0, 0)
+                .getAverageCourseTo(new GeoCoordinate(-1, 1));
+        assertEquals((Angle) Quantity.valueOf(135, DEGREE_ANGLE), a);
+        a = new GeoCoordinate(0, 0)
+                .getAverageCourseTo(new GeoCoordinate(-1, 0));
+        assertEquals((Angle) Quantity.valueOf(180, DEGREE_ANGLE), a);
+        a = new GeoCoordinate(0, 0)
+                .getAverageCourseTo(new GeoCoordinate(-1, -1));
+        assertEquals((Angle) Quantity.valueOf(225, DEGREE_ANGLE), a);
+        a = new GeoCoordinate(0, 0)
+                .getAverageCourseTo(new GeoCoordinate(0, -1));
+        assertEquals((Angle) Quantity.valueOf(270, DEGREE_ANGLE), a);
+        a = new GeoCoordinate(0, 0)
+                .getAverageCourseTo(new GeoCoordinate(1, -1));
+        assertEquals((Angle) Quantity.valueOf(315, DEGREE_ANGLE), a);
+    }
 
 }

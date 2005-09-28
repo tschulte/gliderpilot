@@ -1,111 +1,175 @@
 /*
- * Created on Oct 4, 2003
- * 
- * Copyright 2003 Tobias Schulte
+ * Created on 03.02.2005
  */
 package de.gliderpilot.geo;
 
-import de.gliderpilot.unit.Distance;
-import de.gliderpilot.unit.DistanceUnit;
-import de.gliderpilot.unit.DistanceVector;
+import static org.jscience.physics.units.NonSI.DEGREE_ANGLE;
+import static org.jscience.physics.units.SI.KILO;
+import static org.jscience.physics.units.SI.METER;
+
+import org.jscience.physics.quantities.Angle;
+import org.jscience.physics.quantities.Dimensionless;
+import org.jscience.physics.quantities.Length;
+import org.jscience.physics.quantities.Quantity;
 
 /**
+ * A geo coordinate is a coordinate somewhere on the earth. Coordinates are
+ * encoded in WGS84.
+ * 
  * @author tobias
  */
 public class GeoCoordinate {
-	private static final Distance EARTH_RADIUS = new Distance(21600/2/Math.PI, DistanceUnit.NAUTICAL_MILE); // due to ICAO 6371 km
-	private static final double INVALID_LON = 181;
-	private static final double INVALID_LAT = 91;
-	private static final double MAX_LON = 180;
-	private static final double MAX_LAT = 90;
 
-	private double lat = INVALID_LAT;
-	private double lon = INVALID_LON;
+    private static final Length EARTH_RADIUS = (Length) Quantity.valueOf(
+            6366.71, KILO(METER)); // due to ICAO 6371 km
 
-	public boolean isValid() {
-		return Math.abs(lat) <= MAX_LAT && Math.abs(lon) <= MAX_LON;
-	}
-	
-	public GeoCoordinate(double lat, double lon) {
-		this.lat = lat;
-		this.lon = lon;
-	}
-	
-//	public DistanceVector getDistanceTo(GeoCoordinate coord) {
-//		double radLat = Math.toRadians(lat);
-//		double sinLat = Math.sin(radLat);
-//		double cosLat = Math.cos(radLat);
-//		double radDestLat = Math.toRadians(coord.lat);
-//		double sinDestLat = Math.sin(radDestLat);
-//		double cosDestLat = Math.cos(radDestLat);
-//		double radLonMinusDestLon = Math.toRadians(lon - coord.lon);
-//		double cosLonMinusDestLon= Math.cos(radLonMinusDestLon);
-//		double distance =
-//			Math.acos((sinLat * sinDestLat) + (cosLat * cosDestLat * cosLonMinusDestLon))
-//				* EARTH_RADIUS.getDistance();
-//		if (java.lang.Double.isNaN(distance)) return null;
-//		double course = 0;
-//		if (distance != 0) {
-//			GeoCoordinate center = new GeoCoordinate((lat+coord.lat)/2, (lon+coord.lon)/2);
-//			double latDiff = coord.lat - lat;
-//			double lonDiff = coord.lon - lon;
-//			lonDiff = lonDiff * Math.cos(Math.toRadians(center.lat));
-//			double degreeDistance = Math.sqrt(Math.pow(latDiff,2)+Math.pow(lonDiff,2));
-//			double radCourse;
-//			if (Math.abs(latDiff) > Math.abs(lonDiff)) {
-//				radCourse = Math.acos(latDiff/degreeDistance);
-//				if (lonDiff < 0) {
-//					radCourse *= -1;
-//				}
-//			} else {
-//				radCourse = Math.asin(lonDiff/degreeDistance);
-//				if (latDiff < 0) {
-//					if (radCourse > 0) {
-//						radCourse += Math.PI/2;
-//					} else {
-//						radCourse -= Math.PI/2;
-//					}
-//				}
-//			}
-//			course = Math.toDegrees(radCourse);
-//		}
-//		return new DistanceVector(distance, EARTH_RADIUS.getUnit(), course);
-//	}
+    private static final Angle MAX_LON = (Angle) Quantity.valueOf(180,
+            DEGREE_ANGLE);
 
-	public DistanceVector getDistanceTo(GeoCoordinate coord) {
-		GeoCoordinate center = new GeoCoordinate((lat+coord.lat)/2, (lon+coord.lon)/2);
-		double dx = coord.lon - lon;
-		double x = 0;
-		if (Math.abs(center.lat) < 90) { 
-			x = dx * 60 * Math.cos(Math.toRadians(center.lat));
-		}
-		double dy = coord.lat - lat;
-		double y = dy * 60;
-		DistanceVector vx = new DistanceVector(Math.abs(x), DistanceUnit.NAUTICAL_MILE, (x<0?270:90));
-		DistanceVector vy = new DistanceVector(Math.abs(y), DistanceUnit.NAUTICAL_MILE, (y<0?180:0));
-		return vx.getSum(vy);
-	}
-	
-	public GeoCoordinate getCoordIn(DistanceVector vector) {
-		vector = (DistanceVector) vector.get(DistanceUnit.NAUTICAL_MILE);
-		DistanceVector vx = vector.getXAmount();
-		double dx = vx.getDistance()/60*(vx.getCourse()>180?-1:1)*Math.cos(Math.toRadians(lat));
-		DistanceVector vy = vector.getYAmount();		
-		double dy = vy.getDistance()/60*(vy.getCourse()>90?-1:1);
-		return new GeoCoordinate(lat+dy,lon+dx);
-	}
-	/**
-	 * @return
-	 */
-	public double getLat() {
-		return lat;
-	}
+    private static final Angle MAX_LAT = (Angle) Quantity.valueOf(90,
+            DEGREE_ANGLE);
 
-	/**
-	 * @return
-	 */
-	public double getLon() {
-		return lon;
-	}
+    /**
+     * This is the latitude of the coordinate in the range -90° to +90° with
+     * negative values representing southern hemisphere and positive values
+     * representing northern hemisphere.
+     */
+    private Angle lat;
+
+    /**
+     * This is the longitude of the coordinate in the range -180° to +180° with
+     * negative values representing western hemisphere and positive values
+     * representing eastern hemisphere.
+     */
+    private Angle lon;
+
+    /**
+     * Construct a new GeoCoordinate for the given latitude and longtude. Both
+     * are given in decimal degrees.
+     */
+    public GeoCoordinate(double lat, double lon) {
+        this.lat = (Angle) Quantity.valueOf(lat, DEGREE_ANGLE);
+        this.lon = (Angle) Quantity.valueOf(lon, DEGREE_ANGLE);
+    }
+
+    /**
+     * Construct a new GeoCoordinate for the given latitude and longtude.
+     */
+    public GeoCoordinate(Angle lat, Angle lon) {
+        this.lat = lat;
+        this.lon = lon;
+    }
+
+    /**
+     * The coordinate is valid if both lon and lat are in the defined range.
+     */
+    public boolean isValid() {
+        return lat != null && lon != null && lat.abs().compareTo(MAX_LAT) <= 0
+                && lon.abs().compareTo(MAX_LON) <= 0;
+    }
+
+    /**
+     * Get the distance between this and the given geo-coordinate.
+     * <p>
+     * <b>Note:</b>The value is an approximation only, assuming the earth was a
+     * sphere!
+     * <p>
+     * Formulary taken from <a
+     * href="http://williams.best.vwh.net/avform.htm">Aviation Formulary </a>
+     * <p>
+     * The great circle distance d between two points with coordinates
+     * {lat1,lon1} and {lat2,lon2} is given by <br>
+     * <code>d=acos(sin(lat1)*sin(lat2)+cos(lat1)*cos(lat2)*cos(lon1-lon2))<code>
+     * <br>
+     * and since one degree on a meridian are 60 NM, we multiply d with 60 NM.
+     * 
+     * @return the distance or null if one position is invalid
+     */
+    public Length getDistanceTo(GeoCoordinate coord) {
+        if (!isValid() || !coord.isValid()) {
+            return null;
+        }
+        Angle lat1 = getLat();
+        Angle lat2 = coord.getLat();
+        Angle lon1 = getLon();
+        Angle lon2 = coord.getLon();
+        Angle deltaLon = (Angle) lon2.minus(lon1);
+        Angle circularDistance;
+        circularDistance = ((Dimensionless) lat1.sine().times(lat2.sine())
+                .plus(lat1.cos().times(lat2.cos()).abs().times(deltaLon.cos())))
+                .acos();
+        return Length.valueOf(EARTH_RADIUS, circularDistance);
+    }
+
+    /**
+     * Get the latidute of this GeoCoordinate in decimal degrees.
+     */
+    public Angle getLat() {
+        return lat;
+    }
+
+    /**
+     * Get the longitude of this GeoCoordinate in decimal degrees.
+     */
+    public Angle getLon() {
+        return lon;
+    }
+
+    /**
+     * Get the true course to the given coordinate.
+     * <p>
+     * <b>Note:</b>The result is the course to steer at the moment. If you
+     * follow this course to reach a coordinate far away and are not going north
+     * or south or 90° or 270° at the equator, you will miss your target! So you
+     * will have to continually update the course to steer. This method might be
+     * used in a flight computer in the plane to get the true course to steer.
+     * <p>
+     * Formulary taken from <a
+     * href="http://williams.best.vwh.net/avform.htm">Aviation Formulary </a>
+     * <p>
+     * The true course in radians is calculated by <br>
+     * <code>tc=mod(atan2(sin(lon1-lon2)*cos(lat2),
+     *     cos(lat1)*sin(lat2)-sin(lat1)*cos(lat2)*cos(lon1-lon2)), 2*pi)
+     *     </code>
+     * 
+     * @param coord
+     *            The target coordinate
+     * @return the true course or null, if any of the given point is invalid
+     */
+    public Angle trueCourseTo(GeoCoordinate coord) {
+        if (coord == null || !coord.isValid() || !isValid()) {
+            return null;
+        }
+        Angle lat1 = getLat();
+        Angle lat2 = coord.getLat();
+        Angle lon1 = getLon();
+        Angle lon2 = coord.getLon();
+        Angle deltaLon = (Angle) lon2.minus(lon1);
+
+        Quantity q1 = deltaLon.sine().times(lat2.cos());
+        Quantity q2 = lat1.cos().times(lat2.sine());
+        Quantity q3 = lat1.sine().times(lat2.cos()).times(deltaLon.cos());
+        Quantity q4 = q2.minus(q3);
+        Angle angle = Angle.atan2(q1, q4);
+        return Course.bound(angle);
+    }
+
+    /**
+     * Get the course you have to steer to reach the endpoint when you don't
+     * want to change the course all the time. This method can be used when you
+     * want to create a flight plan or such.
+     * 
+     * @param coord
+     * @return the average course to steer
+     */
+    public Angle getAverageCourseTo(GeoCoordinate coord) {
+        if (coord == null || !coord.isValid() || !isValid()) {
+            return null;
+        }
+        Angle trueCourseInitial = trueCourseTo(coord);
+        Angle trueCourseEnd = Course.inverse(coord.trueCourseTo(this));
+        Angle diff = Course.diff(trueCourseInitial, trueCourseEnd);
+        return Course.bound((Angle) trueCourseInitial.plus(diff.divide(2)));
+    }
 
 }

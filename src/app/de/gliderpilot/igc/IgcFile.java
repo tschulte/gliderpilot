@@ -33,7 +33,7 @@ import de.gliderpilot.geo.GeoCoordinate;
  */
 public class IgcFile {
 
-    Log log = LogFactory.getLog(getClass());
+    private final Log log = LogFactory.getLog(getClass());
 
     private SimpleDateFormat dateFormat;
 

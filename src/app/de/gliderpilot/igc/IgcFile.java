@@ -13,12 +13,7 @@ import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
-import java.util.TreeMap;
+import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -100,10 +95,11 @@ public class IgcFile {
                     // TODO: OLC file handling
                 }
             } catch (Exception e) {
-                System.err.printf("Error parsing line number %d (\"%s\")",
-                        asciiReader.getLineNumber(), line);
-                System.err.println();
-                errors.put(asciiReader.getLineNumber(), line);
+                log.warn(new Formatter().format(
+                        "Error parsing line number %d (\"%s\")",
+                        Integer.valueOf(asciiReader.getLineNumber()), line)
+                        .toString());
+                errors.put(Integer.valueOf(asciiReader.getLineNumber()), line);
             }
         }
     }

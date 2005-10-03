@@ -17,14 +17,12 @@ import org.jscience.physics.units.SI;
  */
 public class Course {
 
-    private static final Angle TWO_PI = (Angle) Quantity.valueOf(2 * Math.PI,
-            SI.RADIAN);
+    private static final Angle TWO_PI = Quantity
+            .valueOf(2 * Math.PI, SI.RADIAN);
 
-    private static final Angle PI = (Angle) Quantity
-            .valueOf(Math.PI, SI.RADIAN);
+    private static final Angle PI = Quantity.valueOf(Math.PI, SI.RADIAN);
 
-    private static final Angle MINUS_PI = (Angle) Quantity.valueOf(-Math.PI,
-            SI.RADIAN);
+    private static final Angle MINUS_PI = Quantity.valueOf(-Math.PI, SI.RADIAN);
 
     /**
      * Get the inverse course. The inverse course is the course to steer to

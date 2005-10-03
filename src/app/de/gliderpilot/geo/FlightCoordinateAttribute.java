@@ -11,39 +11,34 @@ import org.jscience.physics.quantities.Velocity;
 /**
  * Enumerates additional Attributes a coordinate might have.
  */
-public enum FlightCoordinateAttribute {
+public class FlightCoordinateAttribute<T extends Quantity> {
+
     /**
      * The GPS altitute
      */
-    GPS_ALTITUDE(Length.class),
+    public static final FlightCoordinateAttribute<Length> GPS_ALTITUDE = new FlightCoordinateAttribute<Length>();
+
     /**
      * The Pressure altitude
      */
-    BARO_ALTITUDE(Length.class),
+    public static final FlightCoordinateAttribute<Length> BARO_ALTITUDE = new FlightCoordinateAttribute<Length>();
+
     /**
      * The horizontal speed of the plane
      */
-    SPEED(Velocity.class),
+    public static final FlightCoordinateAttribute<Velocity> SPEED = new FlightCoordinateAttribute<Velocity>();
+
     /**
      * The vertical speed of the plane
      */
-    VERTICAL_SPEED(Velocity.class),
+    public static final FlightCoordinateAttribute<Velocity> VERTICAL_SPEED = new FlightCoordinateAttribute<Velocity>();
+
     /**
      * The Engine level
      */
-    ENL(Dimensionless.class);
+    public static final FlightCoordinateAttribute<Dimensionless> ENL = new FlightCoordinateAttribute<Dimensionless>();
 
-    private Class clazz;
-
-    <T extends Quantity> FlightCoordinateAttribute(Class<T> clazz) {
-        this.clazz = clazz;
-    }
-
-    /**
-     * Checks if a given Quantity type is valid for this key.
-     */
-    public boolean isValid(Quantity q) {
-        return clazz.isInstance(q);
+    private <T extends Quantity> FlightCoordinateAttribute() {
     }
 
 }

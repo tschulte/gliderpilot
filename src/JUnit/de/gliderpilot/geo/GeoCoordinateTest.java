@@ -114,26 +114,26 @@ public class GeoCoordinateTest extends AbstractJadeTest {
                 .getAverageCourseTo(new GeoCoordinate(0, 0));
         assertNull(a);
         a = new GeoCoordinate(0, 0).getAverageCourseTo(new GeoCoordinate(1, 0));
-        assertEquals((Angle) Quantity.valueOf(0, DEGREE_ANGLE), a);
+        assertEquals(Quantity.valueOf(0, DEGREE_ANGLE), a);
         a = new GeoCoordinate(0, 0).getAverageCourseTo(new GeoCoordinate(1, 1));
-        assertEquals((Angle) Quantity.valueOf(45, DEGREE_ANGLE), a);
+        assertEquals(Quantity.valueOf(45, DEGREE_ANGLE), a);
         a = new GeoCoordinate(0, 0).getAverageCourseTo(new GeoCoordinate(0, 1));
-        assertEquals((Angle) Quantity.valueOf(90, DEGREE_ANGLE), a);
+        assertEquals(Quantity.valueOf(90, DEGREE_ANGLE), a);
         a = new GeoCoordinate(0, 0)
                 .getAverageCourseTo(new GeoCoordinate(-1, 1));
-        assertEquals((Angle) Quantity.valueOf(135, DEGREE_ANGLE), a);
+        assertEquals(Quantity.valueOf(135, DEGREE_ANGLE), a);
         a = new GeoCoordinate(0, 0)
                 .getAverageCourseTo(new GeoCoordinate(-1, 0));
-        assertEquals((Angle) Quantity.valueOf(180, DEGREE_ANGLE), a);
+        assertEquals(Quantity.valueOf(180, DEGREE_ANGLE), a);
         a = new GeoCoordinate(0, 0)
                 .getAverageCourseTo(new GeoCoordinate(-1, -1));
-        assertEquals((Angle) Quantity.valueOf(225, DEGREE_ANGLE), a);
+        assertEquals(Quantity.valueOf(225, DEGREE_ANGLE), a);
         a = new GeoCoordinate(0, 0)
                 .getAverageCourseTo(new GeoCoordinate(0, -1));
-        assertEquals((Angle) Quantity.valueOf(270, DEGREE_ANGLE), a);
+        assertEquals(Quantity.valueOf(270, DEGREE_ANGLE), a);
         a = new GeoCoordinate(0, 0)
                 .getAverageCourseTo(new GeoCoordinate(1, -1));
-        assertEquals((Angle) Quantity.valueOf(315, DEGREE_ANGLE), a);
+        assertEquals(Quantity.valueOf(315, DEGREE_ANGLE), a);
     }
 
 }

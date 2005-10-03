@@ -42,7 +42,7 @@ public class FlightCoordinate extends GeoCoordinate {
      * Get the specified attribute of this coordinate or null, if it was not set
      * before or set to null.
      */
-    public Quantity get(FlightCoordinateAttribute attribute) {
+    public <Q extends Quantity> Q get(FlightCoordinateAttribute<Q> attribute) {
         return attributes.get(attribute);
     }
 

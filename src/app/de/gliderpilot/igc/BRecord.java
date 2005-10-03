@@ -9,9 +9,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.jscience.physics.quantities.Dimensionless;
 import org.jscience.physics.quantities.Length;
 import org.jscience.physics.quantities.Quantity;
 import org.jscience.physics.units.SI;
+import org.jscience.physics.units.Unit;
 
 import de.gliderpilot.geo.FlightCoordinate;
 import de.gliderpilot.geo.FlightCoordinateAttribute;
@@ -60,16 +62,17 @@ class BRecord extends AbstractIgcRecord {
         Date date = getDate();
         FlightCoordinateAttributes attributes = new FlightCoordinateAttributes();
         int alt = Integer.parseInt(record.substring(25, 30));
-        Length baroAlt = (Length) Quantity.valueOf(alt, SI.METER);
+        Length baroAlt = Quantity.valueOf(alt, SI.METER);
         attributes.set(FlightCoordinateAttribute.BARO_ALTITUDE, baroAlt);
         alt = Integer.parseInt(record.substring(30, 35));
-        Length gpsAlt = (Length) Quantity.valueOf(alt, SI.METER);
+        Length gpsAlt = Quantity.valueOf(alt, SI.METER);
         attributes.set(FlightCoordinateAttribute.GPS_ALTITUDE, gpsAlt);
         if (iRecord != null) {
             ExtensionIndex index = iRecord.getIndex(IRecord.Extension.ENL);
             if (index != null) {
                 String s = record.substring(index.getStart(), index.getEnd());
-                Quantity enl = Quantity.valueOf(s);
+                Dimensionless enl = Quantity.valueOf(Double.parseDouble(s),
+                        Unit.ONE);
                 attributes.set(FlightCoordinateAttribute.ENL, enl);
             }
         }

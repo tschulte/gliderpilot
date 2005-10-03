@@ -38,4 +38,26 @@ public class BRecordTest extends TestCase {
                 .getAmount() - 11 * 60);
     }
 
+    public void testRecordSW() throws ParseException {
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        IRecord iRecord = new IRecord("I023638FXA3941ENL");
+        BRecord bRecord = new BRecord(
+                "B0953434804754S01116695WA0049600590033002", cal, iRecord);
+        FlightCoordinate coordinate = bRecord.getCoordinate();
+        assertEquals(9, cal.get(Calendar.HOUR_OF_DAY));
+        assertEquals(53, cal.get(Calendar.MINUTE));
+        assertEquals(43, cal.get(Calendar.SECOND));
+        assertEquals(2, coordinate.get(FlightCoordinateAttribute.ENL)
+                .intValue());
+        assertEquals(-48, (int) coordinate.getLat().to(NonSI.DEGREE_ANGLE)
+                .getAmount());
+        assertEquals(-4, (int) coordinate.getLat().to(NonSI.MINUTE_ANGLE)
+                .getAmount() + 48 * 60);
+        assertEquals(-11, (int) coordinate.getLon().to(NonSI.DEGREE_ANGLE)
+                .getAmount());
+        assertEquals(-16, (int) coordinate.getLon().to(NonSI.MINUTE_ANGLE)
+                .getAmount() + 11 * 60);
+    }
+
 }

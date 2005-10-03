@@ -20,14 +20,12 @@ import org.jscience.physics.quantities.Quantity;
  */
 public class GeoCoordinate {
 
-    private static final Length EARTH_RADIUS = (Length) Quantity.valueOf(
-            6366.71, KILO(METER)); // due to ICAO 6371 km
+    private static final Length EARTH_RADIUS = Quantity.valueOf(6366.71,
+            KILO(METER)); // due to ICAO 6371 km
 
-    private static final Angle MAX_LON = (Angle) Quantity.valueOf(180,
-            DEGREE_ANGLE);
+    private static final Angle MAX_LON = Quantity.valueOf(180, DEGREE_ANGLE);
 
-    private static final Angle MAX_LAT = (Angle) Quantity.valueOf(90,
-            DEGREE_ANGLE);
+    private static final Angle MAX_LAT = Quantity.valueOf(90, DEGREE_ANGLE);
 
     /**
      * This is the latitude of the coordinate in the range -90° to +90° with
@@ -48,8 +46,8 @@ public class GeoCoordinate {
      * are given in decimal degrees.
      */
     public GeoCoordinate(double lat, double lon) {
-        this.lat = (Angle) Quantity.valueOf(lat, DEGREE_ANGLE);
-        this.lon = (Angle) Quantity.valueOf(lon, DEGREE_ANGLE);
+        this.lat = Quantity.valueOf(lat, DEGREE_ANGLE);
+        this.lon = Quantity.valueOf(lon, DEGREE_ANGLE);
     }
 
     /**

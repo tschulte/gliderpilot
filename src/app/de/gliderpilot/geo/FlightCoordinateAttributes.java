@@ -30,10 +30,8 @@ public class FlightCoordinateAttributes {
      *             if the given quantity is not compatible to the type of
      *             attribute, i.e. setting a GPS_ALTITUDE of "5 V".
      */
-    public void set(FlightCoordinateAttribute attribute, Quantity value) {
-        if (!attribute.isValid(value)) {
-            throw new IllegalArgumentException(attribute + ":" + value);
-        }
+    public <T extends Quantity> void set(
+            FlightCoordinateAttribute<T> attribute, T value) {
         attributes.put(attribute, value);
     }
 
@@ -41,8 +39,9 @@ public class FlightCoordinateAttributes {
      * Get the specified attribute of this coordinate or null, if it was not set
      * before or set to null.
      */
-    public Quantity get(FlightCoordinateAttribute attribute) {
-        return attributes.get(attribute);
+    @SuppressWarnings("unchecked")
+    public <T extends Quantity> T get(FlightCoordinateAttribute<T> attribute) {
+        return (T)attributes.get(attribute);
     }
 
 }

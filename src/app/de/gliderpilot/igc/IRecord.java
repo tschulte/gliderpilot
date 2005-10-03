@@ -13,7 +13,20 @@ import java.util.Map;
 class IRecord {
 
     enum Extension {
-        FXA, ENL, SIU,
+        /**
+         * Fix Accuracy.
+         */
+        FXA,
+
+        /**
+         * Engine Noise Level.
+         */
+        ENL,
+
+        /**
+         * Satellites in Use.
+         */
+        SIU,
     }
 
     Map<Extension, ExtensionIndex> extensions;
@@ -24,7 +37,7 @@ class IRecord {
         for (Extension extension : Extension.values()) {
             int index = record.indexOf(extension.toString()) - 4;
             if (index > 2) {
-                // start index in igc is 1 base, but we are zero based!
+                // start index in igc is 1 based, but we are zero based!
                 int start = Integer
                         .parseInt(record.substring(index, index + 2)) - 1;
                 int end = Integer.parseInt(record.substring(index + 2,
@@ -40,5 +53,15 @@ class IRecord {
      */
     public ExtensionIndex getIndex(Extension extension) {
         return extensions.get(extension);
+    }
+
+    /**
+     * Check if there is an extension of the given type available.
+     * 
+     * @param extension
+     * @return <code>true</code> if the extension is available.
+     */
+    public boolean hasExtension(Extension extension) {
+        return extensions.containsKey(extension);
     }
 }

@@ -12,14 +12,20 @@ package de.gliderpilot.igc;
  */
 class ExtensionIndex {
 
+    /**
+     * The 0 based start index.
+     */
     private int start;
 
+    /**
+     * The 0 based end index.
+     */
     private int end;
 
     /**
      * Specifies an extension that is defined in the record at index start to
-     * end. Start and end will be directly used for the String#substring(int,
-     * int) Method.
+     * end. Start and end will be directly used for the
+     * {@link String#substring(int, int)} Method.
      */
     public ExtensionIndex(int start, int end) {
         this.start = start;

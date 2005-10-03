@@ -99,6 +99,7 @@ public class IgcFile {
                         "Error parsing line number %d (\"%s\")",
                         Integer.valueOf(asciiReader.getLineNumber()), line)
                         .toString());
+                log.info(e, e);
                 errors.put(Integer.valueOf(asciiReader.getLineNumber()), line);
             }
         }

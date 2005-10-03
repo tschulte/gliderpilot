@@ -10,73 +10,73 @@ import org.jscience.physics.units.NonSI;
 public class CourseTest extends AbstractJadeTest {
 
     public void testBound() {
-        Angle a = (Angle) Quantity.valueOf(361, NonSI.DEGREE_ANGLE);
+        Angle a = Quantity.valueOf(361, NonSI.DEGREE_ANGLE);
         a = Course.bound(a);
-        Angle expected = (Angle) Quantity.valueOf(1, NonSI.DEGREE_ANGLE);
+        Angle expected = Quantity.valueOf(1, NonSI.DEGREE_ANGLE);
         assertEquals(expected, a);
 
-        a = (Angle) Quantity.valueOf(-1, NonSI.DEGREE_ANGLE);
+        a = Quantity.valueOf(-1, NonSI.DEGREE_ANGLE);
         a = Course.bound(a);
-        expected = (Angle) Quantity.valueOf(359, NonSI.DEGREE_ANGLE);
+        expected = Quantity.valueOf(359, NonSI.DEGREE_ANGLE);
         assertEquals(expected, a);
     }
 
     public void testInverse() {
-        Angle a = (Angle) Quantity.valueOf(90, NonSI.DEGREE_ANGLE);
+        Angle a = Quantity.valueOf(90, NonSI.DEGREE_ANGLE);
         a = Course.inverse(a);
-        Angle expected = (Angle) Quantity.valueOf(270, NonSI.DEGREE_ANGLE);
+        Angle expected = Quantity.valueOf(270, NonSI.DEGREE_ANGLE);
         assertEquals(expected, a);
 
-        a = (Angle) Quantity.valueOf(0, NonSI.DEGREE_ANGLE);
+        a = Quantity.valueOf(0, NonSI.DEGREE_ANGLE);
         a = Course.inverse(a);
-        expected = (Angle) Quantity.valueOf(180, NonSI.DEGREE_ANGLE);
+        expected = Quantity.valueOf(180, NonSI.DEGREE_ANGLE);
         assertEquals(expected, a);
 
-        a = (Angle) Quantity.valueOf(360, NonSI.DEGREE_ANGLE);
+        a = Quantity.valueOf(360, NonSI.DEGREE_ANGLE);
         a = Course.inverse(a);
-        expected = (Angle) Quantity.valueOf(180, NonSI.DEGREE_ANGLE);
+        expected = Quantity.valueOf(180, NonSI.DEGREE_ANGLE);
         assertEquals(expected, a);
 
-        a = (Angle) Quantity.valueOf(180, NonSI.DEGREE_ANGLE);
+        a = Quantity.valueOf(180, NonSI.DEGREE_ANGLE);
         a = Course.inverse(a);
-        expected = (Angle) Quantity.valueOf(0, NonSI.DEGREE_ANGLE);
+        expected = Quantity.valueOf(0, NonSI.DEGREE_ANGLE);
         assertEquals(expected, a);
     }
 
     public void testDiff() {
-        Angle a = (Angle) Quantity.valueOf(0, NonSI.DEGREE_ANGLE);
-        Angle b = (Angle) Quantity.valueOf(90, NonSI.DEGREE_ANGLE);
-        Angle expected = (Angle) Quantity.valueOf(90, NonSI.DEGREE_ANGLE);
+        Angle a = Quantity.valueOf(0, NonSI.DEGREE_ANGLE);
+        Angle b = Quantity.valueOf(90, NonSI.DEGREE_ANGLE);
+        Angle expected = Quantity.valueOf(90, NonSI.DEGREE_ANGLE);
         assertEquals(expected, Course.diff(a, b));
 
-        a = (Angle) Quantity.valueOf(0, NonSI.DEGREE_ANGLE);
-        b = (Angle) Quantity.valueOf(100, NonSI.DEGREE_ANGLE);
-        expected = (Angle) Quantity.valueOf(100, NonSI.DEGREE_ANGLE);
+        a = Quantity.valueOf(0, NonSI.DEGREE_ANGLE);
+        b = Quantity.valueOf(100, NonSI.DEGREE_ANGLE);
+        expected = Quantity.valueOf(100, NonSI.DEGREE_ANGLE);
         assertEquals(expected, Course.diff(a, b));
 
-        a = (Angle) Quantity.valueOf(0, NonSI.DEGREE_ANGLE);
-        b = (Angle) Quantity.valueOf(270, NonSI.DEGREE_ANGLE);
-        expected = (Angle) Quantity.valueOf(-90, NonSI.DEGREE_ANGLE);
+        a = Quantity.valueOf(0, NonSI.DEGREE_ANGLE);
+        b = Quantity.valueOf(270, NonSI.DEGREE_ANGLE);
+        expected = Quantity.valueOf(-90, NonSI.DEGREE_ANGLE);
         assertEquals(expected, Course.diff(a, b));
 
-        a = (Angle) Quantity.valueOf(0, NonSI.DEGREE_ANGLE);
-        b = (Angle) Quantity.valueOf(260, NonSI.DEGREE_ANGLE);
-        expected = (Angle) Quantity.valueOf(-100, NonSI.DEGREE_ANGLE);
+        a = Quantity.valueOf(0, NonSI.DEGREE_ANGLE);
+        b = Quantity.valueOf(260, NonSI.DEGREE_ANGLE);
+        expected = Quantity.valueOf(-100, NonSI.DEGREE_ANGLE);
         assertEquals(expected, Course.diff(a, b));
 
-        a = (Angle) Quantity.valueOf(0, NonSI.DEGREE_ANGLE);
-        b = (Angle) Quantity.valueOf(370, NonSI.DEGREE_ANGLE);
-        expected = (Angle) Quantity.valueOf(10, NonSI.DEGREE_ANGLE);
+        a = Quantity.valueOf(0, NonSI.DEGREE_ANGLE);
+        b = Quantity.valueOf(370, NonSI.DEGREE_ANGLE);
+        expected = Quantity.valueOf(10, NonSI.DEGREE_ANGLE);
         assertEquals(expected, Course.diff(a, b));
 
-        a = (Angle) Quantity.valueOf(370, NonSI.DEGREE_ANGLE);
-        b = (Angle) Quantity.valueOf(0, NonSI.DEGREE_ANGLE);
-        expected = (Angle) Quantity.valueOf(-10, NonSI.DEGREE_ANGLE);
+        a = Quantity.valueOf(370, NonSI.DEGREE_ANGLE);
+        b = Quantity.valueOf(0, NonSI.DEGREE_ANGLE);
+        expected = Quantity.valueOf(-10, NonSI.DEGREE_ANGLE);
         assertEquals(expected, Course.diff(a, b));
 
-        a = (Angle) Quantity.valueOf(350, NonSI.DEGREE_ANGLE);
-        b = (Angle) Quantity.valueOf(0, NonSI.DEGREE_ANGLE);
-        expected = (Angle) Quantity.valueOf(10, NonSI.DEGREE_ANGLE);
+        a = Quantity.valueOf(350, NonSI.DEGREE_ANGLE);
+        b = Quantity.valueOf(0, NonSI.DEGREE_ANGLE);
+        expected = Quantity.valueOf(10, NonSI.DEGREE_ANGLE);
         assertEquals(expected, Course.diff(a, b));
     }
 }

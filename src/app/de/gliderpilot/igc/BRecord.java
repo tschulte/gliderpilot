@@ -15,10 +15,7 @@ import org.jscience.physics.quantities.Quantity;
 import org.jscience.physics.units.SI;
 import org.jscience.physics.units.Unit;
 
-import de.gliderpilot.geo.FlightCoordinate;
-import de.gliderpilot.geo.FlightCoordinateAttribute;
-import de.gliderpilot.geo.FlightCoordinateAttributes;
-import de.gliderpilot.geo.GeoCoordinate;
+import de.gliderpilot.geo.*;
 
 /**
  * The B-Record in an IGC-file contains one of the track points of the flight.
@@ -40,7 +37,7 @@ class BRecord extends AbstractIgcRecord {
 
     private String record;
 
-    private FlightCoordinate coordinate;
+    private FlightCoordinateImpl coordinate;
 
     /**
      * Parse the given record of an igc file. If the iRecord parameter is non
@@ -58,7 +55,7 @@ class BRecord extends AbstractIgcRecord {
             throws ParseException {
         this.record = record;
         this.cal = cal;
-        GeoCoordinate geoCoordinate = parsePoint(record, 7);
+        GeoCoordinateImpl geoCoordinate = parsePoint(record, 7);
         Date date = getDate();
         FlightCoordinateAttributes attributes = new FlightCoordinateAttributes();
         int alt = Integer.parseInt(record.substring(25, 30));
@@ -76,7 +73,7 @@ class BRecord extends AbstractIgcRecord {
                 attributes.set(FlightCoordinateAttribute.ENL, enl);
             }
         }
-        this.coordinate = new FlightCoordinate(geoCoordinate, date, attributes);
+        this.coordinate = new FlightCoordinateImpl(geoCoordinate, date, attributes);
     }
 
     /**
@@ -122,7 +119,7 @@ class BRecord extends AbstractIgcRecord {
      * 
      * @return
      */
-    public FlightCoordinate getCoordinate() {
+    public FlightCoordinateImpl getCoordinate() {
         return coordinate;
     }
 

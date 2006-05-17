@@ -22,7 +22,7 @@ public class FlightCoordinateTest extends TestCase {
         Dimensionless enl = Quantity.valueOf(1, NonSI.PERCENT);
         attributes.set(FlightCoordinateAttribute.ENL, enl);
         Date date = new Date();
-        FlightCoordinate coord = new FlightCoordinate(new GeoCoordinate(0, 0),
+        FlightCoordinate coord = new FlightCoordinateImpl(new GeoCoordinateImpl(0, 0),
                 date, attributes);
         assertSame(enl, coord.get(FlightCoordinateAttribute.ENL));
         assertSame(alt, coord.get(FlightCoordinateAttribute.BARO_ALTITUDE));

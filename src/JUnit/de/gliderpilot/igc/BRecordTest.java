@@ -11,7 +11,7 @@ import junit.framework.TestCase;
 
 import org.jscience.physics.units.NonSI;
 
-import de.gliderpilot.geo.FlightCoordinate;
+import de.gliderpilot.geo.FlightCoordinateImpl;
 import de.gliderpilot.geo.FlightCoordinateAttribute;
 
 public class BRecordTest extends TestCase {
@@ -22,7 +22,7 @@ public class BRecordTest extends TestCase {
         IRecord iRecord = new IRecord("I023638FXA3941ENL");
         BRecord bRecord = new BRecord(
                 "B0953434804754N01116695EA0049600590033002", cal, iRecord);
-        FlightCoordinate coordinate = bRecord.getCoordinate();
+        FlightCoordinateImpl coordinate = bRecord.getCoordinate();
         assertEquals(9, cal.get(Calendar.HOUR_OF_DAY));
         assertEquals(53, cal.get(Calendar.MINUTE));
         assertEquals(43, cal.get(Calendar.SECOND));
@@ -44,7 +44,7 @@ public class BRecordTest extends TestCase {
         IRecord iRecord = new IRecord("I023638FXA3941ENL");
         BRecord bRecord = new BRecord(
                 "B0953434804754S01116695WA0049600590033002", cal, iRecord);
-        FlightCoordinate coordinate = bRecord.getCoordinate();
+        FlightCoordinateImpl coordinate = bRecord.getCoordinate();
         assertEquals(9, cal.get(Calendar.HOUR_OF_DAY));
         assertEquals(53, cal.get(Calendar.MINUTE));
         assertEquals(43, cal.get(Calendar.SECOND));

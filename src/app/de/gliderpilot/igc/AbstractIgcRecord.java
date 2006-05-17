@@ -8,6 +8,7 @@ import org.jscience.physics.quantities.Quantity;
 import org.jscience.physics.units.NonSI;
 
 import de.gliderpilot.geo.GeoCoordinate;
+import de.gliderpilot.geo.GeoCoordinateImpl;
 
 /**
  * Base class for all IGC-records
@@ -16,13 +17,6 @@ import de.gliderpilot.geo.GeoCoordinate;
  * 
  */
 abstract class AbstractIgcRecord {
-
-    /**
-     * 
-     */
-    public AbstractIgcRecord() {
-        super();
-    }
 
     /**
      * Parse the given line for a geocoord at the given index. A coordinate is
@@ -35,10 +29,10 @@ abstract class AbstractIgcRecord {
      *   DDMMmmmSDDDMMmmmW
      * </pre>
      */
-    protected GeoCoordinate parsePoint(String line, int index) {
+    protected GeoCoordinateImpl parsePoint(String line, int index) {
         Angle lat = parseLat(line, index);
         Angle lon = parseLon(line, index);
-        return new GeoCoordinate(lat, lon);
+        return new GeoCoordinateImpl(lat, lon);
     }
 
     /**

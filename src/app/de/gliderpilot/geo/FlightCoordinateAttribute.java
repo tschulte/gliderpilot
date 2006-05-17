@@ -11,7 +11,7 @@ import org.jscience.physics.quantities.Velocity;
 /**
  * Enumerates additional Attributes a coordinate might have.
  */
-public class FlightCoordinateAttribute<T extends Quantity> {
+public final class FlightCoordinateAttribute<T extends Quantity> {
 
     /**
      * The GPS altitute
@@ -38,6 +38,11 @@ public class FlightCoordinateAttribute<T extends Quantity> {
      */
     public static final FlightCoordinateAttribute<Dimensionless> ENL = new FlightCoordinateAttribute<Dimensionless>();
 
+    /**
+     * Cannot directly be instantiated.
+     * 
+     * @param <T>
+     */
     private <T extends Quantity> FlightCoordinateAttribute() {
     }
 

@@ -15,7 +15,7 @@ import org.jscience.physics.quantities.Quantity;
  * @author tobias
  * 
  */
-public class FlightCoordinateAttributes {
+public final class FlightCoordinateAttributes {
 
     /**
      * Contains all additional attributes that a track-coordinate might have.

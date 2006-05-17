@@ -18,8 +18,8 @@ import java.util.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import de.gliderpilot.geo.FlightCoordinate;
-import de.gliderpilot.geo.GeoCoordinate;
+import de.gliderpilot.geo.FlightCoordinateImpl;
+import de.gliderpilot.geo.GeoCoordinateImpl;
 
 /**
  * Parse a given IGC file and make the content available as appropriate objects.
@@ -42,7 +42,7 @@ public class IgcFile {
     /**
      * This list will contain all the coordinates of the flight.
      */
-    private List<FlightCoordinate> coordinates = new ArrayList<FlightCoordinate>(
+    private List<FlightCoordinateImpl> coordinates = new ArrayList<FlightCoordinateImpl>(
             5000);
 
     /**
@@ -59,7 +59,7 @@ public class IgcFile {
      */
     private IRecord iRecord;
 
-    private List<GeoCoordinate> task = new ArrayList<GeoCoordinate>();
+    private List<GeoCoordinateImpl> task = new ArrayList<GeoCoordinateImpl>();
 
     public IgcFile(File file) throws FileNotFoundException, IOException {
         this(new FileInputStream(file));
@@ -75,8 +75,6 @@ public class IgcFile {
     /**
      * DOCUMENT ME!
      * 
-     * @return DOCUMENT ME!
-     * @throws ParseException
      * @throws IOException
      */
     private void parse() throws IOException {

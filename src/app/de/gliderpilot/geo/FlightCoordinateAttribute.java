@@ -3,10 +3,10 @@
  */
 package de.gliderpilot.geo;
 
-import org.jscience.physics.quantities.Dimensionless;
-import org.jscience.physics.quantities.Length;
-import org.jscience.physics.quantities.Quantity;
-import org.jscience.physics.quantities.Velocity;
+import javax.quantities.Dimensionless;
+import javax.quantities.Length;
+import javax.quantities.Quantity;
+import javax.quantities.Velocity;
 
 /**
  * Enumerates additional Attributes a coordinate might have.
@@ -16,34 +16,45 @@ public final class FlightCoordinateAttribute<T extends Quantity> {
     /**
      * The GPS altitute
      */
-    public static final FlightCoordinateAttribute<Length> GPS_ALTITUDE = new FlightCoordinateAttribute<Length>();
+    public static final FlightCoordinateAttribute<Length> GPS_ALTITUDE = new FlightCoordinateAttribute<Length>("GPS_ALTITUDE");
 
     /**
      * The Pressure altitude
      */
-    public static final FlightCoordinateAttribute<Length> BARO_ALTITUDE = new FlightCoordinateAttribute<Length>();
+    public static final FlightCoordinateAttribute<Length> BARO_ALTITUDE = new FlightCoordinateAttribute<Length>("BARO_ALTITUDE");
 
     /**
      * The horizontal speed of the plane
      */
-    public static final FlightCoordinateAttribute<Velocity> SPEED = new FlightCoordinateAttribute<Velocity>();
+    public static final FlightCoordinateAttribute<Velocity> SPEED = new FlightCoordinateAttribute<Velocity>("SPEED");
 
     /**
      * The vertical speed of the plane
      */
-    public static final FlightCoordinateAttribute<Velocity> VERTICAL_SPEED = new FlightCoordinateAttribute<Velocity>();
+    public static final FlightCoordinateAttribute<Velocity> VERTICAL_SPEED = new FlightCoordinateAttribute<Velocity>("VERTICAL_SPEED");
 
     /**
      * The Engine level
      */
-    public static final FlightCoordinateAttribute<Dimensionless> ENL = new FlightCoordinateAttribute<Dimensionless>();
+    public static final FlightCoordinateAttribute<Dimensionless> ENL = new FlightCoordinateAttribute<Dimensionless>("ENL");
+
+    private String _name;
 
     /**
      * Cannot directly be instantiated.
      * 
-     * @param <T>
+     * @param pName the name for the toString method
      */
-    private <T extends Quantity> FlightCoordinateAttribute() {
+    private FlightCoordinateAttribute(String pName) {
+        _name = pName;
+    }
+    
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return _name;
     }
 
 }

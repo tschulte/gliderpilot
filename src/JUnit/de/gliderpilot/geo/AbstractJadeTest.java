@@ -3,10 +3,11 @@
  */
 package de.gliderpilot.geo;
 
+import javax.quantities.Quantity;
+
 import junit.framework.TestCase;
 
-import org.jscience.physics.quantities.Angle;
-import org.jscience.physics.quantities.Quantity;
+import org.jscience.physics.measures.Measure;
 
 /**
  * Base class for all tests of functionality dealing with Jade.
@@ -23,21 +24,13 @@ public abstract class AbstractJadeTest extends TestCase {
      * @param q1
      * @param q2
      */
-    protected void assertEquals(Quantity q1, Quantity q2) {
-        double maxDiff = Math.abs(.0001 * q1.doubleValue());
+    @SuppressWarnings("unchecked")
+    protected <T extends Quantity> void assertEquals(Measure<T> q1,
+            Measure<T> q2) {
+        double maxDiff = Math.abs(.0001 * q1.doubleValue(q1.getUnit()));
         maxDiff = Math.max(maxDiff, 0.0001);
-        assertEquals(q1.doubleValue(), q2.doubleValue(), maxDiff);
-    }
-
-    /**
-     * Asserts that the diff of the given two angles is very close to zero.
-     * 
-     * @param a1
-     * @param a2
-     */
-    protected void assertEquals(Angle a1, Angle a2) {
-        Angle diff = Course.diff(a1, a2);
-        assertEquals((Quantity) Angle.ZERO, diff);
+        assertEquals(q1.doubleValue(q1.getUnit()),
+                q2.doubleValue(q1.getUnit()), maxDiff);
     }
 
 }

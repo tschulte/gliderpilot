@@ -51,11 +51,9 @@
     <property name="src.dir" value="${basedir}/src" />
     <property name="src.dir.app" value="${src.dir}/app" />
     <property name="src.dir.JUnit" value="${src.dir}/JUnit" />
-    <property name="compile.debug" value="false" />
-    <property name="compile.optimize" value="true" />
     <property name="src.encoding" value="UTF-8" />
     <property name="src.version" value="1.5" />
-    <property name="target.version" value="jsr14" />
+    <property name="target.version" value="1.5" />
 
     <!-- external libraries are found here -->
     <property name="lib.dir" value="${basedir}/lib" />
@@ -71,7 +69,6 @@
     <path id="lib.jscience">
         <fileset dir="${lib.dir}">
             <include name="jscience/**/*.jar" />
-            <include name="javolution/**/*.jar" />
         </fileset>
     </path>
     <path id="lib.logging">
@@ -99,6 +96,11 @@
     </path>
     <taskdef resource="emma_ant.properties" classpathref="lib.emma" />
 
+    <target name="init.properties.coverage">
+        <property name="compile.debug" value="true" />
+        <property name="compile.optimize" value="false" />
+    </target>
+    
     <target name="clean" description="clean up build artefacts">
         <delete quiet="true">
             <fileset dir="${build.dir}" />
@@ -122,6 +124,8 @@
             depends="clean, coverage" />
 
     <target name="compile" description="compile all classes" depends="init">
+        <property name="compile.debug" value="false" />
+        <property name="compile.optimize" value="true" />
         <javac srcdir="${src.dir.app}"
                destdir="${build.classes.app}"
                failonerror="yes"
@@ -162,7 +166,7 @@
 
     <target name="test"
             description="Unit test the application"
-            depends="instrument">
+            depends="compile">
         <junit fork="true"
                errorProperty="test.failed"
                failureProperty="test.failed">
@@ -184,7 +188,7 @@
             <classpath refid="lib.logging" />
 
             <jvmarg value="-Demma.coverage.out.file=${build.reports.coverage}/coverage.emma" />
-            <jvmarg value="-Demma.coverage.out.merge=false" />
+            <jvmarg value="-Demma.coverage.out.merge=true" />
             <assertions>
                 <enable />
             </assertions>
@@ -197,7 +201,7 @@
             </batchtest>
         </junit>
         <junitreport todir="${build.reports.JUnit}">
-            <fileset dir="${build.reports.JUnit}" includes="TEST*.xml" />
+            <fileset dir="${build.reports.JUnit}" includes="TEST-*.xml" />
             <report todir="${build.reports.JUnit}" />
         </junitreport>
         <fail if="test.failed"/>
@@ -205,7 +209,7 @@
 
     <target name="coverage"
             description="Create coverage in build/reports/coverage"
-            depends="test">
+            depends="init.properties.coverage, instrument, test">
         <emma>
             <report sourcepath="${src.dir.app}">
                 <fileset dir="${build.reports.coverage}">

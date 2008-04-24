@@ -15,29 +15,29 @@ class ExtensionIndex {
     /**
      * The 0 based start index.
      */
-    private int start;
+    private int _start;
 
     /**
      * The 0 based end index.
      */
-    private int end;
+    private int _end;
 
     /**
      * Specifies an extension that is defined in the record at index start to
      * end. Start and end will be directly used for the
      * {@link String#substring(int, int)} Method.
      */
-    public ExtensionIndex(int start, int end) {
-        this.start = start;
-        this.end = end;
+    public ExtensionIndex(int pStart, int pEnd) {
+        _start = pStart;
+        _end = pEnd;
     }
 
     public int getEnd() {
-        return end;
+        return _end;
     }
 
     public int getStart() {
-        return start;
+        return _start;
     }
 
 }

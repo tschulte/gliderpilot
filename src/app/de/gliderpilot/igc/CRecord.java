@@ -3,7 +3,7 @@
  */
 package de.gliderpilot.igc;
 
-import de.gliderpilot.geo.GeoCoordinateImpl;
+import org.jscience.geography.coordinates.Coordinates;
 
 /**
  * The C Record is used to specify tasks and to make flight declarations. It is
@@ -35,7 +35,7 @@ import de.gliderpilot.geo.GeoCoordinateImpl;
  */
 class CRecord extends AbstractIgcRecord {
 
-    private GeoCoordinateImpl coord;
+    private Coordinates _coordinate;
 
     public CRecord(String record) {
         if (record.indexOf('N') < 0 && record.indexOf('S') < 0
@@ -43,11 +43,11 @@ class CRecord extends AbstractIgcRecord {
                 || record.indexOf("0000000") == 1) {
             return;
         }
-        coord = parsePoint(record, 1);
+        _coordinate = parsePoint(record, 1);
     }
 
-    public GeoCoordinateImpl getCoordinate() {
-        return coord;
+    public Coordinates getCoordinate() {
+        return _coordinate;
     }
 
 }

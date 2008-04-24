@@ -9,13 +9,17 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.jscience.physics.quantities.Dimensionless;
-import org.jscience.physics.quantities.Length;
-import org.jscience.physics.quantities.Quantity;
-import org.jscience.physics.units.SI;
-import org.jscience.physics.units.Unit;
+import javax.quantities.Dimensionless;
+import javax.units.SI;
+import javax.units.Unit;
 
-import de.gliderpilot.geo.*;
+import org.jscience.geography.coordinates.Altitude;
+import org.jscience.physics.measures.Measure;
+
+import de.gliderpilot.geo.FlightCoordinate;
+import de.gliderpilot.geo.FlightCoordinateAttribute;
+import de.gliderpilot.geo.FlightCoordinateAttributes;
+import de.gliderpilot.geo.GeoCoordinate;
 
 /**
  * The B-Record in an IGC-file contains one of the track points of the flight.
@@ -33,11 +37,11 @@ class BRecord extends AbstractIgcRecord {
         timeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
 
-    private Calendar cal;
+    private Calendar _cal;
 
-    private String record;
+    private String _record;
 
-    private FlightCoordinateImpl coordinate;
+    private FlightCoordinate _coordinate;
 
     /**
      * Parse the given record of an igc file. If the iRecord parameter is non
@@ -51,29 +55,30 @@ class BRecord extends AbstractIgcRecord {
      * @throws ParseException
      *             if the time could not be parsed.
      */
-    public BRecord(String record, Calendar cal, IRecord iRecord)
+    public BRecord(String pRecord, Calendar pCal, IRecord pIRecord)
             throws ParseException {
-        this.record = record;
-        this.cal = cal;
-        GeoCoordinateImpl geoCoordinate = parsePoint(record, 7);
-        Date date = getDate();
+        this._record = pRecord;
+        this._cal = pCal;
+        GeoCoordinate geoCoordinate = parsePoint(pRecord, 7);
         FlightCoordinateAttributes attributes = new FlightCoordinateAttributes();
-        int alt = Integer.parseInt(record.substring(25, 30));
-        Length baroAlt = Quantity.valueOf(alt, SI.METER);
+
+        Date date = getDate();
+        int alt = Integer.parseInt(pRecord.substring(25, 30));
+        Altitude baroAlt = Altitude.valueOf(alt, SI.METER);
         attributes.set(FlightCoordinateAttribute.BARO_ALTITUDE, baroAlt);
-        alt = Integer.parseInt(record.substring(30, 35));
-        Length gpsAlt = Quantity.valueOf(alt, SI.METER);
+        alt = Integer.parseInt(pRecord.substring(30, 35));
+        Altitude gpsAlt = Altitude.valueOf(alt, SI.METER);
         attributes.set(FlightCoordinateAttribute.GPS_ALTITUDE, gpsAlt);
-        if (iRecord != null) {
-            ExtensionIndex index = iRecord.getIndex(IRecord.Extension.ENL);
+        if (pIRecord != null) {
+            ExtensionIndex index = pIRecord.getIndex(IRecord.Extension.ENL);
             if (index != null) {
-                String s = record.substring(index.getStart(), index.getEnd());
-                Dimensionless enl = Quantity.valueOf(Double.parseDouble(s),
-                        Unit.ONE);
+                String s = pRecord.substring(index.getStart(), index.getEnd());
+                Measure<Dimensionless> enl = Measure.valueOf(Double
+                        .parseDouble(s), Unit.ONE);
                 attributes.set(FlightCoordinateAttribute.ENL, enl);
             }
         }
-        this.coordinate = new FlightCoordinateImpl(geoCoordinate, date, attributes);
+        _coordinate = new FlightCoordinate(date, geoCoordinate, attributes);
     }
 
     /**
@@ -91,36 +96,36 @@ class BRecord extends AbstractIgcRecord {
      *             if the date could not be parsed
      */
     private Date getDate() throws ParseException {
-        int millis = (int) timeFormat.parse(record.substring(1, 7)).getTime();
-        Date oldDate = cal.getTime();
+        int millis = (int) timeFormat.parse(_record.substring(1, 7)).getTime();
+        Date oldDate = _cal.getTime();
         resetCal();
-        cal.add(Calendar.MILLISECOND, millis);
-        Date date = cal.getTime();
+        _cal.add(Calendar.MILLISECOND, millis);
+        Date date = _cal.getTime();
         if (date.before(oldDate)) {
             resetCal();
-            cal.add(Calendar.DATE, 1);
+            _cal.add(Calendar.DATE, 1);
             return getDate();
         }
-        return cal.getTime();
+        return _cal.getTime();
     }
 
     /**
      * Reset the given calendar to the start of it's current day.
      */
     private void resetCal() {
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
+        _cal.set(Calendar.HOUR_OF_DAY, 0);
+        _cal.set(Calendar.MINUTE, 0);
+        _cal.set(Calendar.SECOND, 0);
+        _cal.set(Calendar.MILLISECOND, 0);
     }
 
     /**
      * Get the coordinate given by this B-record
      * 
-     * @return
+     * @return the coordinate
      */
-    public FlightCoordinateImpl getCoordinate() {
-        return coordinate;
+    public FlightCoordinate getCoordinate() {
+        return _coordinate;
     }
 
 }

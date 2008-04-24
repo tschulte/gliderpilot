@@ -3,12 +3,13 @@
  */
 package de.gliderpilot.igc;
 
-import org.jscience.physics.quantities.Angle;
-import org.jscience.physics.quantities.Quantity;
-import org.jscience.physics.units.NonSI;
+import javax.quantities.Angle;
+import javax.units.NonSI;
+import javax.units.SI;
+
+import org.jscience.physics.measures.Measure;
 
 import de.gliderpilot.geo.GeoCoordinate;
-import de.gliderpilot.geo.GeoCoordinateImpl;
 
 /**
  * Base class for all IGC-records
@@ -29,10 +30,10 @@ abstract class AbstractIgcRecord {
      *   DDMMmmmSDDDMMmmmW
      * </pre>
      */
-    protected GeoCoordinateImpl parsePoint(String line, int index) {
-        Angle lat = parseLat(line, index);
-        Angle lon = parseLon(line, index);
-        return new GeoCoordinateImpl(lat, lon);
+    protected GeoCoordinate parsePoint(String line, int index) {
+        Measure<Angle> lat = parseLat(line, index);
+        Measure<Angle> lon = parseLon(line, index);
+        return new GeoCoordinate(lat, lon);
     }
 
     /**
@@ -42,18 +43,18 @@ abstract class AbstractIgcRecord {
      * @param index
      * @return the longitude
      */
-    private Angle parseLon(String line, int index) {
-        Angle lon = Angle.ZERO;
+    private Measure<Angle> parseLon(String line, int index) {
+        Measure<Angle> lon = Measure.valueOf(0, SI.RADIAN);
         int i = Integer.parseInt(line.substring(index + 8, index + 11));
-        lon = (Angle) lon.plus(Quantity.valueOf(i, NonSI.DEGREE_ANGLE));
+        lon = lon.plus(Measure.valueOf(i, NonSI.DEGREE_ANGLE));
         i = Integer.parseInt(line.substring(index + 11, index + 13));
-        lon = (Angle) lon.plus(Quantity.valueOf(i, NonSI.MINUTE_ANGLE));
+        lon = lon.plus(Measure.valueOf(i, NonSI.MINUTE_ANGLE));
         i = Integer.parseInt(line.substring(index + 13, index + 16));
         double d = (double) i / 1000;
-        lon = (Angle) lon.plus(Quantity.valueOf(d, NonSI.MINUTE_ANGLE));
+        lon = lon.plus(Measure.valueOf(d, NonSI.MINUTE_ANGLE));
         boolean east = line.charAt(index + 16) == 'E';
         if (!east) {
-            lon = (Angle) lon.opposite();
+            lon = lon.opposite();
         }
         return lon;
     }
@@ -65,18 +66,18 @@ abstract class AbstractIgcRecord {
      * @param index
      * @return the latitude
      */
-    private Angle parseLat(String line, int index) {
-        Angle lat = Angle.ZERO;
+    private Measure<Angle> parseLat(String line, int index) {
+        Measure<Angle> lat = Measure.valueOf(0, SI.RADIAN);
         int i = Integer.parseInt(line.substring(index, index + 2));
-        lat = (Angle) lat.plus(Quantity.valueOf(i, NonSI.DEGREE_ANGLE));
+        lat = lat.plus(Measure.valueOf(i, NonSI.DEGREE_ANGLE));
         i = Integer.parseInt(line.substring(index + 2, index + 4));
-        lat = (Angle) lat.plus(Quantity.valueOf(i, NonSI.MINUTE_ANGLE));
+        lat = lat.plus(Measure.valueOf(i, NonSI.MINUTE_ANGLE));
         i = Integer.parseInt(line.substring(index + 4, index + 7));
         double d = (double) i / 1000;
-        lat = (Angle) lat.plus(Quantity.valueOf(d, NonSI.MINUTE_ANGLE));
+        lat = lat.plus(Measure.valueOf(d, NonSI.MINUTE_ANGLE));
         boolean north = line.charAt(index + 7) == 'N';
         if (!north) {
-            lat = (Angle) lat.opposite();
+            lat = lat.opposite();
         }
         return lat;
     }

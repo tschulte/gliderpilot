@@ -5,8 +5,9 @@ package de.gliderpilot.geo;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
-import org.jscience.physics.quantities.Quantity;
+import javax.quantities.Quantity;
 
 /**
  * This class is just a wrapper around a Map that does additional checking in
@@ -20,7 +21,7 @@ public final class FlightCoordinateAttributes {
     /**
      * Contains all additional attributes that a track-coordinate might have.
      */
-    private Map<FlightCoordinateAttribute, Quantity> attributes = new HashMap<FlightCoordinateAttribute, Quantity>();
+    private Map<FlightCoordinateAttribute, Quantity> _attributes = new HashMap<FlightCoordinateAttribute, Quantity>();
 
     /**
      * Set the given attribute to the given value. The Value may be null to
@@ -31,8 +32,8 @@ public final class FlightCoordinateAttributes {
      *             attribute, i.e. setting a GPS_ALTITUDE of "5 V".
      */
     public <T extends Quantity> void set(
-            FlightCoordinateAttribute<T> attribute, T value) {
-        attributes.put(attribute, value);
+            FlightCoordinateAttribute<T> attribute, Quantity<T> value) {
+        _attributes.put(attribute, value);
     }
 
     /**
@@ -40,8 +41,30 @@ public final class FlightCoordinateAttributes {
      * before or set to null.
      */
     @SuppressWarnings("unchecked")
-    public <T extends Quantity> T get(FlightCoordinateAttribute<T> attribute) {
-        return (T)attributes.get(attribute);
+    public <T extends Quantity> Quantity<T> get(
+            FlightCoordinateAttribute<T> attribute) {
+        return _attributes.get(attribute);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        for (Entry<FlightCoordinateAttribute, Quantity> entry : _attributes
+                .entrySet()) {
+            if (sb.length() > 1) {
+                sb.append(",");
+            }
+            sb.append(entry.getKey());
+            sb.append(":");
+            sb.append(entry.getValue());
+        }
+        sb.append("]");
+        return sb.toString();
+    }
 }

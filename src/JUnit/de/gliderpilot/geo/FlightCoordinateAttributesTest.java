@@ -3,13 +3,16 @@
  */
 package de.gliderpilot.geo;
 
+import javax.quantities.Dimensionless;
+import javax.quantities.Length;
+import javax.quantities.Quantity;
+import javax.quantities.Scalar;
+import javax.units.NonSI;
+import javax.units.SI;
+
 import junit.framework.TestCase;
 
-import org.jscience.physics.quantities.Dimensionless;
-import org.jscience.physics.quantities.Length;
-import org.jscience.physics.quantities.Quantity;
-import org.jscience.physics.units.NonSI;
-import org.jscience.physics.units.SI;
+import org.jscience.physics.measures.Measure;
 
 public class FlightCoordinateAttributesTest extends TestCase {
 
@@ -21,13 +24,15 @@ public class FlightCoordinateAttributesTest extends TestCase {
     }
 
     public void testSetAttributes() {
-        Length in = Quantity.valueOf(1000, SI.METER);
+        Quantity<Length> in = Measure.valueOf(1000, SI.METER);
         attributes.set(FlightCoordinateAttribute.BARO_ALTITUDE, in);
-        Length out = attributes.get(FlightCoordinateAttribute.BARO_ALTITUDE);
+        Quantity<Length> out = attributes
+                .get(FlightCoordinateAttribute.BARO_ALTITUDE);
         assertSame(in, out);
         out = attributes.get(FlightCoordinateAttribute.GPS_ALTITUDE);
         assertNull(out);
-        Dimensionless in2 = Quantity.valueOf(1, NonSI.PERCENT);
+        Quantity<Dimensionless> in2 = new Scalar<Dimensionless>(1,
+                NonSI.PERCENT);
         attributes.set(FlightCoordinateAttribute.ENL, in2);
     }
 
